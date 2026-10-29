@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Gateway - Najla Putri</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,600&family=Poppins:wght@300;400;600;700&family=Great+Vibes&display=swap" rel="stylesheet">
+    <style>
+        /* --- RESET & VARIABEL --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        :root {
+            --bg-color: #f8f6fc;
+            --soft-purple: #e6dfff;
+            --primary-purple: #9d84e5;
+            --dark-purple: #4a3b7c;
+            --text-color: #333;
+            --glass-bg: rgba(255, 255, 255, 0.65);
+            --glass-border: rgba(255, 255, 255, 0.9);
+            --card-shadow: 0 20px 40px rgba(157, 132, 229, 0.15);
+        }
+
+        body {
+            background-color: var(--bg-color);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+            position: relative;
+            perspective: 1200px;
+        }
+
+        /* --- ANIMASI BACKGROUND 3D (Aura Ungu Bergerak) --- */
+        .bg-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            z-index: -1;
+            animation: floatOrb 15s infinite alternate ease-in-out;
+        }
+
+        .orb-1 {
+            width: 500px; height: 500px;
+            background: rgba(200, 180, 255, 0.4);
+            top: -10%; left: -10%;
+        }
+
+        .orb-2 {
+            width: 400px; height: 400px;
+            background: rgba(157, 132, 229, 0.3);
+            bottom: -10%; right: -10%;
+            animation-delay: -5s;
+        }
+
+        .orb-3 {
+            width: 300px; height: 300px;
+            background: rgba(255, 200, 240, 0.3);
+            top: 40%; left: 60%;
+            animation-delay: -10s;
+        }
+
+        @keyframes floatOrb {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(80px, -60px) scale(1.2); }
+        }
+
+        /* --- KONTENER UTAMA --- */
+        .main-container {
+            width: 100%;
+            max-width: 500px;
+            padding: 20px;
+            position: relative;
+            z-index: 10;
+            transform-style: preserve-3d;
+            animation: entrance 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+
+        @keyframes entrance {
+            0% { opacity: 0; transform: translateY(100px) rotateX(-15deg); }
+            100% { opacity: 1; transform: translateY(0) rotateX(0); }
+        }
+
+        /* --- KARTU GLASSMORPHISM --- */
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 2px solid var(--glass-border);
+            border-radius: 30px;
+            padding: 35px 25px;
+            box-shadow: var(--card-shadow);
+            transform-style: preserve-3d;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .glass-card:hover {
+            transform: translateZ(30px) rotateY(2deg) rotateX(2deg);
+            box-shadow: 0 30px 60px rgba(157, 132, 229, 0.25);
+        }
+
+        /* --- HEADER --- */
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+            transform: translateZ(40px);
+        }
+
+        .header h1 {
+            font-family: 'Great Vibes', cursive;
+            font-size: 3.5rem;
+            color: var(--dark-purple);
+            line-height: 1;
+            text-shadow: 2px 2px 10px rgba(255,255,255,0.8);
+        }
+
+        .header h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
+            color: var(--primary-purple);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-top: -5px;
+        }
+
+        .greeting {
+            font-size: 0.9rem;
+            color: var(--text-color);
+            background: rgba(255,255,255,0.8);
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            margin-top: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        /* --- NOTIFIKASI / WARNING --- */
+        .warning-box {
+            background: linear-gradient(135deg, #fff0f5, #ffe4e1);
+            border-left: 4px solid #ff6b81;
+            padding: 15px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            color: #d63031;
+            margin-bottom: 25px;
+            transform: translateZ(20px);
+            box-shadow: 0 10px 20px rgba(255, 107, 129, 0.1);
+            line-height: 1.5;
+        }
+
+        .warning-box strong {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+        }
+
+        /* --- SECTION TITLE --- */
+        .section-title {
+            font-size: 1rem;
+            color: var(--dark-purple);
+            font-weight: 700;
+            margin: 20px 0 10px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transform: translateZ(25px);
+        }
+
+        .section-title::after {
+            content: '';
+            flex: 1;
+            height: 2px;
+            background: linear-gradient(to right, var(--soft-purple), transparent);
+            border-radius: 2px;
+        }
+
+        /* --- AREA QRIS --- */
+        .qris-card {
+            background: #fff;
+            padding: 15px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.05);
+            position: relative;
+            overflow: hidden;
+            transform: translateZ(50px) scale(1);
+            transition: 0.4s;
+            margin-bottom: 15px;
+            border: 1px solid var(--soft-purple);
+        }
+
+        .qris-card:hover {
+            transform: translateZ(70px) scale(1.02);
+            box-shadow: 0 25px 50px rgba(157, 132, 229, 0.3);
+        }
+
+        /* Efek Kilau */
+        .qris-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 50%; height: 100%;
+            background: linear-gradient(to right, transparent, rgba(255,255,255,0.9), transparent);
+            transform: skewX(-25deg);
+            animation: shine 5s infinite;
+        }
+
+        @keyframes shine {
+            0% { left: -100%; }
+            20% { left: 200%; }
+            100% { left: 200%; }
+        }
+
+        .qris-card img {
+            width: 100%;
+            max-width: 250px;
+            border-radius: 10px;
+            display: block;
+            margin: 0 auto;
+            mix-blend-mode: multiply; /* Agar background putih menyatu */
+        }
+
+        .qris-note {
+            font-size: 0.8rem;
+            color: var(--text-color);
+            margin-top: 10px;
+            font-weight: 600;
+            background: var(--soft-purple);
+            padding: 5px;
+            border-radius: 8px;
+            display: inline-block;
+        }
+
+        /* --- METODE PEMBAYARAN LIST --- */
+        .payment-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            transform: translateZ(30px);
+        }
+
+        .method-item {
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid var(--soft-purple);
+            padding: 15px;
+            border-radius: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .method-item:hover {
+            background: #fff;
+            transform: translateX(10px) translateZ(10px);
+            border-color: var(--primary-purple);
+            box-shadow: 0 10px 20px rgba(157, 132, 229, 0.15);
+        }
+
+        .method-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .method-name {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--primary-purple);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .method-num {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--dark-purple);
+            letter-spacing: 1px;
+        }
+
+        .method-name-text {
+            font-size: 0.75rem;
+            color: #777;
+        }
+
+        .copy-btn {
+            background: var(--soft-purple);
+            border: none;
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: 0.3s;
+            color: var(--dark-purple);
+        }
+
+        .copy-btn svg {
+            width: 18px; height: 18px;
+            transition: 0.3s;
+        }
+
+        .copy-btn:hover {
+            background: var(--primary-purple);
+            color: #fff;
+            transform: rotate(15deg) scale(1.1);
+            box-shadow: 0 5px 15px rgba(157, 132, 229, 0.4);
+        }
+
+        /* --- FOOTER WHATSAPP --- */
+        .footer-action {
+            margin-top: 30px;
+            text-align: center;
+            transform: translateZ(40px);
+        }
+
+        .wa-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: linear-gradient(135deg, #25D366, #128C7E);
+            color: white;
+            text-decoration: none;
+            padding: 15px 30px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            box-shadow: 0 10px 20px rgba(37, 211, 102, 0.3);
+            transition: 0.3s;
+            width: 100%;
+        }
+
+        .wa-btn:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(37, 211, 102, 0.4);
+        }
+
+        .wa-icon {
+            width: 24px; height: 24px;
+            fill: currentColor;
+        }
+
+        .notes {
+            font-size: 0.75rem;
+            color: var(--text-color);
+            margin-top: 15px;
+            opacity: 0.8;
+            line-height: 1.4;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .header h1 { font-size: 2.8rem; }
+            .glass-card { padding: 25px 15px; }
+            .qris-card img { max-width: 200px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Background Orbs -->
+    <div class="bg-orb orb-1"></div>
+    <div class="bg-orb orb-2"></div>
+    <div class="bg-orb orb-3"></div>
+
+    <div class="main-container">
+        <div class="glass-card">
+            
+            <!-- Header -->
+            <div class="header">
+                <h2>Payment Gateway</h2>
+                <h1>Najla Putri</h1>
+                <div class="greeting">Hi! Silakan lakukan pembayaran ✨</div>
+            </div>
+
+            <!-- Notifikasi -->
+            <div class="warning-box">
+                <strong>⚠️ Note Penting!</strong>
+                Maksimal transfer <b>Rp499.000</b> per QRIS. Transfer di atas 499K WAJIB 2x tf.<br>
+                Wajib kirim bukti transfer (Dilarang keras kirim bukti sekali lihat/1x view).
+            </div>
+
+            <!-- QRIS Section -->
+            <div class="section-title">📸 QRIS All Payment</div>
+            <div class="qris-card">
+                <!-- GANTI URL DI BAWAH DENGAN LINK GAMBAR QRIS ANDA -->
+                <img src="https://cdn.phototourl.com/member/2026-10-29-58b3be1e-d37d-43ea-b48d-2c138c700514.jpg" alt="QRIS Najla">
+                <div class="qris-note">Tahan lama gambar untuk simpan, lalu scan dari galeri.</div>
+            </div>
+
+            <!-- E-Wallet Section -->
+            <div class="section-title">📱 E-Wallet</div>
+            <div class="payment-list">
+                <!-- DANA -->
+                <div class="method-item">
+                    <div class="method-info">
+                        <span class="method-name">DANA</span>
+                        <span class="method-num">0851 7810 9675</span>
+                        <span class="method-name-text">a.n. najla putri ramadhani</span>
+                    </div>
+                    <button class="copy-btn" onclick="copyText('085178109675', this)" title="Salin Nomor">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                    </button>
+                </div>
+                <!-- GOPAY -->
+                <div class="method-item">
+                    <div class="method-info">
+                        <span class="method-name">GoPay</span>
+                        <span class="method-num">0851 7810 9675</span>
+                        <span class="method-name-text">a.n. najla putri ramadhani</span>
+                    </div>
+                    <button class="copy-btn" onclick="copyText('085178109675', this)" title="Salin Nomor">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                    </button>
+                </div>
+                <!-- SHOPEEPAY -->
+                <div class="method-item">
+                    <div class="method-info">
+                        <span class="method-name">ShopeePay</span>
+                        <span class="method-num">0851 8327 2465</span>
+                        <span class="method-name-text">a.n. cacabien</span>
+                    </div>
+                    <button class="copy-btn" onclick="copyText('085183272465', this)" title="Salin Nomor">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Bank Section -->
+            <div class="section-title">🏦 Bank Transfer</div>
+            <div class="payment-list">
+                <!-- SEABANK -->
+                <div class="method-item">
+                    <div class="method-info">
+                        <span class="method-name">SeaBank</span>
+                        <span class="method-num">9010 3607 1216</span>
+                        <span class="method-name-text">a.n. najla putri ramadhani</span>
+                    </div>
+                    <button class="copy-btn" onclick="copyText('901036071216', this)" title="Salin Nomor">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Footer Action -->
+            <div class="footer-action">
+                <a href="https://wa.me/6281389165195?text=Halo%20kak,%20aku%20sudah%20transfer%20yaa.%20Ini%20bukti%20transfernya:" target="_blank" class="wa-btn">
+                    <svg class="wa-icon" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+                    Kirim Bukti via WhatsApp
+                </a>
+                <p class="notes">Pesan: Halo kak, aku (nama pengirim), aku sudah tf yaa.<br>Setelah WhatsApp terbuka, lampirkan bukti transfernya.</p>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Script Copy -->
+    <script>
+        function copyText(text, btn) {
+            navigator.clipboard.writeText(text).then(() => {
+                const originalContent = btn.innerHTML;
+                btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="#4caf50" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+                btn.style.background = '#e8f5e9';
+                
+                setTimeout(() => {
+                    btn.innerHTML = originalContent;
+                    btn.style.background = '';
+                }, 2000);
+            }).catch(err => {
+                alert('Gagal menyalin teks.');
+            });
+        }
+    </script>
+</body>
+</html>
